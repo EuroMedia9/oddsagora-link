@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>OddsAgora — Sua IA de Odds no Telegram</title>
+  <meta property="og:title" content="OddsAgora — Sua IA de Odds no Telegram">
+  <meta property="og:description" content="Odds em tempo real, análises, hedges e sinais do Brasileirão. Sua assistente pessoal de IA no Telegram.">
+  <meta property="og:image" content="https://oddsagora.github.io/og-image.jpg">
+  <meta property="og:url" content="https://oddsagora.github.io">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #0a0a0a;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(180deg, #0a0a0a 0%, #1a0000 50%, #0a0a0a 100%);
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .logo span {
+      color: #ff3b3b;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #ff3b3b;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff3b3b, #cc0000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(255, 59, 59, 0.3);
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    /* TELEGRAM BUTTON */
+    .btn-telegram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 18px 24px;
+      background: #0088cc;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-telegram:hover {
+      background: #0099dd;
+      transform: translateY(-1px);
+    }
+
+    .btn-telegram:active {
+      transform: translateY(0);
+    }
+
+    .btn-telegram svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    /* COPY SECTION */
+    .copy-section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .copy-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .copy-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 4px 4px 4px 16px;
+    }
+
+    .copy-field span {
+      flex: 1;
+      font-size: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .copy-btn {
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .copy-btn.copied {
+      background: #22c55e;
+    }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .feature {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .feature-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .feature-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #ccc;
+      line-height: 1.3;
+    }
+
+    /* SOCIALS */
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .social-link {
+      color: #555;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .social-link:hover {
+      color: #fff;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #22c55e;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .footer {
+      font-size: 11px;
+      color: #333;
+    }
+
+    @media (max-width: 400px) {
+      .features { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Spinner / fallback detection */
+    .status-msg {
+      font-size: 12px;
+      color: #555;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="avatar">OA</div>
+    <div class="logo">ODDS<span>AGORA</span></div>
+    <div class="badge">🤖 IA Assistente</div>
+
+    <p class="subtitle">
+      Sua agente de IA para odds, análises, hedges e sinais do Brasileirão.<br>
+      Direto no seu Telegram. Grátis.
+    </p>
+
+    <!-- TELEGRAM BUTTON -->
+    <a id="tgBtn" class="btn-telegram" href="#">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+      </svg>
+      Abrir no Telegram
+    </a>
+
+    <div class="status-msg" id="statusMsg"></div>
+
+    <!-- COPY SECTION -->
+    <div class="copy-section">
+      <div class="copy-label">📱 Ou copie o usuário</div>
+      <div class="copy-field">
+        <span>@oddsagora_bot</span>
+        <button class="copy-btn" id="copyBtn" onclick="copyUser()">Copiar</button>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <div class="feature-text">Odds ao vivo<br>do Brasileirão</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📋</div>
+        <div class="feature-text">Análises de<br>jogos e spreads</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-text">Hedges<br>otimizados</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-text">Sinais direto<br>na sua DM</div>
+      </div>
+    </div>
+
+    <!-- SOCIALS -->
+    <div class="socials">
+      <a class="social-link" href="https://x.com/oddsagora" target="_blank" rel="noopener">𝕏 / Twitter</a>
+      <a class="social-link" href="https://youtube.com/@oddsagora" target="_blank" rel="noopener">▶ YouTube</a>
+    </div>
+
+    <div class="footer">OddsAgora AI &copy; 2026</div>
+
+  </div>
+
+  <div class="toast" id="toast">Copiado!</div>
+
+  <script>
+    // ----- TELEGRAM DEEP LINK -----
+    const TG_USER = 'oddsagora_bot';
+    const TG_START = 'promo';
+
+    function openTelegram() {
+      const btn = document.getElementById('tgBtn');
+      const msg = document.getElementById('statusMsg');
+
+      // Try native tg:// protocol (works on mobile with Telegram installed)
+      const tgDeep = 'tg://resolve?domain=' + TG_USER + '&start=' + TG_START;
+      // Fallback: web version
+      const tgWeb = 'https://t.me/' + TG_USER + '?start=' + TG_START;
+
+      // Use a hidden iframe to trigger tg:// — cleaner than location.href
+      // because it doesn't leave a broken page on failure
+      try {
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = tgDeep;
+        document.body.appendChild(iframe);
+
+        // If tg:// fails (no Telegram), the iframe will error silently.
+        // Navigate to the web version after a short delay.
+        setTimeout(function() {
+          window.location.href = tgWeb;
+        }, 500);
+      } catch(e) {
+        // Direct fallback
+        window.location.href = tgWeb;
+      }
+    }
+
+    // Attach click handler
+    document.getElementById('tgBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      openTelegram();
+    });
+
+    // Also try auto-open on page load (first visit via tweet)
+    // Check if user came from a promotional source
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('ref') === 'x' || !document.referrer || document.referrer.includes('t.co') || document.referrer.includes('twitter')) {
+      // Brief delay so the page renders before redirect attempt
+      setTimeout(function() {
+        openTelegram();
+      }, 800);
+    }
+
+    // ----- COPY USERNAME -----
+    function copyUser() {
+      const text = '@' + TG_USER;
+      const btn = document.getElementById('copyBtn');
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          showCopied(btn);
+        }).catch(function() {
+          fallbackCopy(text, btn);
+        });
+      } else {
+        fallbackCopy(text, btn);
+      }
+    }
+
+    function fallbackCopy(text, btn) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showCopied(btn);
+      } catch(e) {
+        // If all else fails, select for manual copy
+        ta.style.position = 'static';
+        ta.style.left = '0';
+        ta.select();
+      }
+      document.body.removeChild(ta);
+    }
+
+    function showCopied(btn) {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      showToast();
+      setTimeout(function() {
+        btn.textContent = 'Copiar';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(function() {
+        t.classList.remove('show');
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
